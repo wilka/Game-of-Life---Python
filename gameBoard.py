@@ -24,31 +24,26 @@ class GameBoard:
 
         return self.board[x][y]
 
-    def numLivingAdjacentCells(self, position):
+    def adjacentCellPositions(self, position):
         (x, y) = position
-        count = 0
-        if self.isCellAlive((x-1, y-1)):
-            count+=1
-        if self.isCellAlive((x, y-1)):
-            count+=1
-        if self.isCellAlive((x+1, y-1)):
-            count+=1
+        yield (x-1, y-1)
+        yield (x, y-1)
+        yield (x+1, y-1)
 
-        if self.isCellAlive((x-1, y)):
-            count+=1
-        if self.isCellAlive((x+1, y)):
-            count+=1
+        yield (x-1, y)
+        yield (x+1, y)
 
-        if self.isCellAlive((x-1, y+1)):
-            count+=1
-        if self.isCellAlive((x, y+1)):
-            count+=1
-        if self.isCellAlive((x+1, y+1)):
-            count+=1            
+        yield (x-1, y+1)
+        yield (x, y+1)
+        yield (x+1, y+1)            
 
-        return count
+    def adjacentCells(self, position):
+        for pos in self.adjacentCellPositions(position):
+            yield (pos[0], pos[1], self.isCellAlive(pos))
 
-
+    def numLivingAdjacentCells(self, position):
+        return sum(map(lambda x: x[2] , self.adjacentCells(position)))
+        
     def shouldBeAliveInNextGen(self, position):
         (x, y) = position
         livingAdjacents = self.numLivingAdjacentCells(position)
@@ -76,3 +71,10 @@ class GameBoard:
                 next.board[x][y] = self.shouldBeAliveInNextGen((x, y))
             
         return next     
+
+    def cells(self):
+        for (x, row) in enumerate(self.board):
+            for (y, isAlive) in enumerate(row):
+                yield (x, y, isAlive)
+
+

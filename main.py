@@ -57,10 +57,9 @@ while True:
 
     screen.fill(black)
 
-    for (x, row) in enumerate(board.board):
-        for (y, isAlive) in enumerate(row):
-            if isAlive:
-                drawCell(screen, (x,y))
+    for (x, y, isAlive) in board.cells():
+        if isAlive:
+            drawCell(screen, (x,y))
 
     pygame.display.flip()
 
