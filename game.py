@@ -17,7 +17,7 @@ class Game:
         self.screen = display.set_mode(self.screenSize)
         self.display = display
 
-        self.buttonBar = ButtonBar(self.screenSize, self.buttonAreaHeight, [GameButton(self.togglePause), GameButton(self.resetGame)])
+        self.buttonBar = ButtonBar(self.screenSize, self.buttonAreaHeight, [GameButton(self.togglePause, "Pause"), GameButton(self.resetGame, "Reset"), GameButton(self.clearGame, "Clear")])
         self.isPaused = False
 
 
@@ -41,9 +41,15 @@ class Game:
 
     def togglePause(self):
         self.isPaused = not self.isPaused
+        return self.isPaused
+
 
     def resetGame(self):
         self.board = self.makeDefaultBoard()
+
+
+    def clearGame(self):
+        self.board = GameBoard(self.gridSize)
 
 
     def runGameLoop(self, getGameEvent, setEventTimer):
