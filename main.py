@@ -4,6 +4,7 @@ import pygame
 import pygame.display as display
 import pygame.draw as draw
 from gameBoard import GameBoard
+from point import Point
 
 pygame.init()
 
@@ -74,16 +75,16 @@ def main():
     board = GameBoard(gridSize)
 
     # Glider at the top left
-    board.setCell((1, 0), True)
-    board.setCell((2, 1), True)
-    board.setCell((0, 2), True)
-    board.setCell((1, 2), True)
-    board.setCell((2, 2), True)
+    board.setCell(Point(1, 0), True)
+    board.setCell(Point(2, 1), True)
+    board.setCell(Point(0, 2), True)
+    board.setCell(Point(1, 2), True)
+    board.setCell(Point(2, 2), True)
 
     # Blinker at the top middle
-    board.setCell((20, 2), True)
-    board.setCell((20, 3), True)
-    board.setCell((20, 4), True)
+    board.setCell(Point(20, 2), True)
+    board.setCell(Point(20, 3), True)
+    board.setCell(Point(20, 4), True)
 
     mouse_pos = (0,0)
     
