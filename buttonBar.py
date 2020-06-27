@@ -2,9 +2,9 @@ import colors
 import pygame.draw as draw
 
 class ButtonBar:
-    def __init__(self, screenSize, buttonAreaHeight, button):
+    def __init__(self, screenSize, buttonAreaHeight, buttons):
         self.screenSize = screenSize
-        self.button = button
+        self.buttons = buttons
         self.buttonAreaHeight = buttonAreaHeight
 
     def draw(self, surface):
@@ -17,10 +17,27 @@ class ButtonBar:
         draw.rect(surface, colors.buttonAreaColor, buttonArea)
 
         # draw the buttons
-        buttonSize = self.button.size
+        totalButtonWidth = sum(map(lambda b: b.size[0], self.buttons))
+        maxButtonHeight = max(map(lambda b: b.size[1], self.buttons))
 
-        buttonDisplayRect = ((x + width / 2) - buttonSize[0], (y + height / 2) - buttonSize[1] / 2, buttonSize[0], buttonSize[1])
-        self.button.setDisplayRect(buttonDisplayRect)
 
-        draw.rect(surface, self.button.color, buttonDisplayRect)
+        drawStartPositionX = (x + width / 2) - totalButtonWidth
+        drawStartPositionY = (y + height / 2) - maxButtonHeight / 2
+
+        for button in self.buttons:
+            buttonDisplayRect = (drawStartPositionX, drawStartPositionY, button.size[0], button.size[1])
+            button.setDisplayRect(buttonDisplayRect)
+
+            draw.rect(surface, button.color, buttonDisplayRect)
+
+            drawStartPositionX = drawStartPositionX + button.size[0]
+
+
+    def clickTest(self, mouse_pos):
+        for button in self.buttons:
+            button.clickTest(mouse_pos)
+
+    def mouseMoveTest(self, mouse_pos):
+        for button in self.buttons:
+            button.mouseMoveTest(mouse_pos)
 

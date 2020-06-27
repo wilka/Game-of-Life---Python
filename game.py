@@ -17,8 +17,7 @@ class Game:
         self.screen = display.set_mode(self.screenSize)
         self.display = display
 
-        self.pauseButton = GameButton(self.togglePause)
-        self.buttonBar = ButtonBar(self.screenSize, self.buttonAreaHeight, self.pauseButton)
+        self.buttonBar = ButtonBar(self.screenSize, self.buttonAreaHeight, [GameButton(self.togglePause), GameButton(self.resetGame)])
         self.isPaused = False
 
 
@@ -43,9 +42,14 @@ class Game:
     def togglePause(self):
         self.isPaused = not self.isPaused
 
+    def resetGame(self):
+        self.board = self.makeDefaultBoard()
+
 
     def runGameLoop(self, gameEvent):
         mouse_pos = (0, 0)
+        mouse_move_pos = (0, 0)
+        boardRender = BoardRender(self.cellSize)
 
         while True:
             for event in gameEvent.get():
@@ -53,14 +57,19 @@ class Game:
                     return
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = event.pos
+                if event.type == pygame.MOUSEMOTION:
+                    mouse_move_pos = event.pos
+                    #mouse_pos = pygame.mouse.get_pos()                    
 
             self.screen.fill(colors.gameBackground)
 
-            boardRender = BoardRender(self.cellSize)
+            
             boardRender.draw(self.screen, self.board)
 
+            self.buttonBar.mouseMoveTest(mouse_move_pos)
+            self.buttonBar.clickTest(mouse_pos)
             self.buttonBar.draw(self.screen)
-            self.pauseButton.clickTest(mouse_pos)
+            
             
             mouse_pos = (0, 0)
             self.display.flip()
