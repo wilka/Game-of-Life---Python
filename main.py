@@ -13,25 +13,14 @@ gridSize = 50,40
 
 black = 0, 0, 0
 
+buttonAreaHeight = 100
 
 display.set_caption("Game of Life")
-screenSize = width, height = gridSize[0] * cellSize[0], gridSize[1] * cellSize[1]
+screenSize = width, height = gridSize[0] * cellSize[0], (gridSize[1] * cellSize[1]) + buttonAreaHeight
 screen = display.set_mode(screenSize)
 
-board = GameBoard(gridSize)
-
-# Glider at the top left
-board.setCell((1, 0), True)
-board.setCell((2, 1), True)
-board.setCell((0, 2), True)
-board.setCell((1, 2), True)
-board.setCell((2, 2), True)
-
-# Blinker at the top middle
-board.setCell((20, 2), True)
-board.setCell((20, 3), True)
-board.setCell((20, 4), True)
-
+buttonArea = (0, height - buttonAreaHeight, width, buttonAreaHeight)
+buttonAreaColor = 255, 255, 255
 
 def drawCell(surface, position):
     cellMainColor = 180, 180, 180
@@ -50,19 +39,79 @@ def drawCell(surface, position):
     draw.line(surface, cellDarkEdgeColor, (x, y + cellHeight), (x + cellWidth, y + cellHeight))
     draw.line(surface, cellDarkEdgeColor, (x + cellWidth, y), (x + cellWidth, y + cellHeight))
 
+def drawButtons(surface, button):
+    draw.rect(surface, buttonAreaColor, buttonArea)
 
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT: sys.exit()
+    (x, y, width, height) = buttonArea
 
-    screen.fill(black)
+    buttonSize = button.size
 
-    for (x, y, isAlive) in board.cells():
-        if isAlive:
-            drawCell(screen, (x,y))
+    playPauseButtonRect = ((x + width / 2) - buttonSize[0], (y + height / 2) - buttonSize[1] / 2, buttonSize[0], buttonSize[1])
+    button.setDisplayRect(playPauseButtonRect)
 
-    pygame.display.flip()
+    draw.rect(surface, button.color, playPauseButtonRect)
 
-    board = board.nextGeneration()
+class GameButton:
+    def __init__(self, action):
+        self.action = action
+        self.size = (45, 25)
+        self.color = (200, 0, 0)
 
-    sleep(0.25)
+    def setDisplayRect(self, displayRect):
+        self.displayRect = pygame.Rect(displayRect)
+
+    def clickTest(self, mouseDownPos):
+        if self.displayRect.collidepoint(mouseDownPos):
+            self.action()
+
+isPaused = False
+
+def togglePause(): 
+    global isPaused
+    isPaused = not isPaused
+
+def main():
+    board = GameBoard(gridSize)
+
+    # Glider at the top left
+    board.setCell((1, 0), True)
+    board.setCell((2, 1), True)
+    board.setCell((0, 2), True)
+    board.setCell((1, 2), True)
+    board.setCell((2, 2), True)
+
+    # Blinker at the top middle
+    board.setCell((20, 2), True)
+    board.setCell((20, 3), True)
+    board.setCell((20, 4), True)
+
+    mouse_pos = (0,0)
+    
+    pauseButton = GameButton(togglePause)
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT: 
+                return
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = event.pos
+
+        screen.fill(black)
+
+        for cell in board.cells():
+            if cell.isAlive:
+                drawCell(screen, cell.position)
+
+        drawButtons(screen, pauseButton)
+        pauseButton.clickTest(mouse_pos)
+        
+        mouse_pos = (0, 0)
+        pygame.display.flip()
+
+        if not isPaused:
+            board = board.nextGeneration()
+
+        sleep(0.25)
+
+if __name__ == '__main__': 
+    main()        

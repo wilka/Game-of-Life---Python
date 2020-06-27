@@ -1,4 +1,8 @@
-
+class Cell:
+    def __init__(self, position, isAlive):
+        self.position = position
+        self.isAlive = isAlive
+        
 class GameBoard:
     def __init__(self, gridSize):
         self.gridSize = gridSize
@@ -75,6 +79,6 @@ class GameBoard:
     def cells(self):
         for (x, row) in enumerate(self.board):
             for (y, isAlive) in enumerate(row):
-                yield (x, y, isAlive)
+                yield Cell((x, y), isAlive)
 
 
