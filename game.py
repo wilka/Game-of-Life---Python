@@ -46,35 +46,37 @@ class Game:
         self.board = self.makeDefaultBoard()
 
 
-    def runGameLoop(self, gameEvent):
+    def runGameLoop(self, getGameEvent, setEventTimer):
         mouse_pos = (0, 0)
         mouse_move_pos = (0, 0)
         boardRender = BoardRender(self.cellSize)
 
+        MOVE_TO_NEXT_GENERATION = pygame.USEREVENT + 1
+
+        setEventTimer(MOVE_TO_NEXT_GENERATION, 225)
+
+
         while True:
-            for event in gameEvent.get():
+            for event in getGameEvent.get():
                 if event.type == pygame.QUIT: 
                     return
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = event.pos
                 if event.type == pygame.MOUSEMOTION:
                     mouse_move_pos = event.pos
-                    #mouse_pos = pygame.mouse.get_pos()                    
+                if event.type == MOVE_TO_NEXT_GENERATION:
+                    if not self.isPaused:
+                        self.board = self.board.nextGeneration()
 
             self.screen.fill(colors.gameBackground)
 
-            
             boardRender.draw(self.screen, self.board)
 
             self.buttonBar.mouseMoveTest(mouse_move_pos)
             self.buttonBar.clickTest(mouse_pos)
             self.buttonBar.draw(self.screen)
             
-            
             mouse_pos = (0, 0)
             self.display.flip()
 
-            if not self.isPaused:
-                self.board = self.board.nextGeneration()
-
-            sleep(0.25)
+            pygame.time.wait(20)

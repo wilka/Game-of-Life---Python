@@ -9,8 +9,8 @@ def main():
     display.set_caption("Game of Life")    
     gridSize = 50,40
     game = Game(gridSize, display)
-    
-    game.runGameLoop(pygame.event)
+
+    game.runGameLoop(pygame.event, pygame.time.set_timer)
 
 
 if __name__ == '__main__': 
