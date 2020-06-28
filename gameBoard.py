@@ -1,31 +1,31 @@
 from point import Point
 
 class Cell:
-    def __init__(self, position, isAlive):
+    def __init__(self, position, is_alive):
         self.position = position
-        self.isAlive = isAlive
+        self.is_alive = is_alive
         
 class GameBoard:
-    def __init__(self, gridSize):
-        self.gridSize = gridSize
+    def __init__(self, grid_size):
+        self.grid_size = grid_size
         self.board = []
-        for x in range(gridSize[0]):
+        for x in range(grid_size[0]):
             row = []
-            for y in range(gridSize[1]):
+            for y in range(grid_size[1]):
                 row.append(False)
             
             self.board.append(row)
 
-    def setCell(self, position, isAlive):
-        self.board[position.x][position.y] = isAlive
+    def set_cell(self, position, is_alive):
+        self.board[position.x][position.y] = is_alive
 
-    def isCellAlive(self, position):
+    def is_cell_alive(self, position):
         try:
             return self.board[position.x][position.y]
         except IndexError:
             return False
 
-    def adjacentCellPositions(self, position):
+    def _adjacent_cell_positions(self, position):
         (x, y) = position
         yield Point(x-1, y-1)
         yield Point(x, y-1)
@@ -38,43 +38,43 @@ class GameBoard:
         yield Point(x, y+1)
         yield Point(x+1, y+1)            
 
-    def adjacentCells(self, position):
-        for pos in self.adjacentCellPositions(position):
-            yield Cell(pos, self.isCellAlive(pos))
+    def _adjacent_cells(self, position):
+        for pos in self._adjacent_cell_positions(position):
+            yield Cell(pos, self.is_cell_alive(pos))
 
-    def numLivingAdjacentCells(self, position):
-        return sum(map(lambda cell: cell.isAlive, self.adjacentCells(position)))
+    def _num_living_adjacent_cells(self, position):
+        return sum(map(lambda cell: cell.is_alive, self._adjacent_cells(position)))
         
-    def shouldBeAliveInNextGen(self, position):
-        livingAdjacents = self.numLivingAdjacentCells(position)
+    def _should_be_alive_in_next_gen(self, position):
+        living_adjacents = self._num_living_adjacent_cells(position)
         if self.board[position.x][position.y]:
             # Any live cell with fewer than two live neighbours dies, as if by underpopulation.
-            if livingAdjacents < 2:
+            if living_adjacents < 2:
                 return False
             # Any live cell with two or three live neighbours lives on to the next generation.
-            if livingAdjacents == 2 or livingAdjacents == 3:
+            if living_adjacents == 2 or living_adjacents == 3:
                 return True
             # Any live cell with more than three live neighbours dies, as if by overpopulation.
             return False
         else:
             # Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-            if livingAdjacents == 3:
+            if living_adjacents == 3:
                 return True
             else:
                 return False
 
 
-    def nextGeneration(self):
-        next = GameBoard(self.gridSize)
+    def next_generation(self):
+        next = GameBoard(self.grid_size)
         for x in range(len(next.board)):
             for y in range(len(next.board[x])):
-                next.board[x][y] = self.shouldBeAliveInNextGen(Point(x, y))
+                next.board[x][y] = self._should_be_alive_in_next_gen(Point(x, y))
             
         return next     
 
     def cells(self) -> Cell:
         for (x, row) in enumerate(self.board):
-            for (y, isAlive) in enumerate(row):
-                yield Cell(Point(x, y), isAlive)
+            for (y, is_alive) in enumerate(row):
+                yield Cell(Point(x, y), is_alive)
 
 

@@ -3,60 +3,60 @@ import colors
 from point import Point
 
 class BoardRender:
-    def __init__(self, surface, board, cellSize):
+    def __init__(self, surface, board, cell_size):
         self.surface = surface
         self.board = board
-        self.cellSize = cellSize
-        self.highlightCell = (-1, -1)
+        self.cell_size = cell_size
+        self.highlight_cell = (-1, -1)
 
     def draw(self):
         for cell in self.board.cells():
-            if cell.isAlive:
-                self.drawLiveCell(self.surface, cell.position)
+            if cell.is_alive:
+                self._draw_live_cell(self.surface, cell.position)
             else:
-                self.drawDeadCell(self.surface, cell.position)
+                self._draw_dead_cell(self.surface, cell.position)
 
-    def mouseMoveTest(self, mouse_pos):
-        self.highlightCell = self.mousePosToCell(mouse_pos)
+    def mouse_move_test(self, mouse_pos):
+        self.highlight_cell = self.mouse_pos_to_cell_location(mouse_pos)
 
-    def mousePosToCell(self, mouse_pos):
+    def mouse_pos_to_cell_location(self, mouse_pos):
         (x, y) = mouse_pos
-        (cellWidth, cellHeight) = self.cellSize
-        x /= cellWidth
-        y /= cellHeight
+        (cell_width, cell_height) = self.cell_size
+        x /= cell_width
+        y /= cell_height
         
         return Point(int(x), int(y))
 
-    def clickTest(self, mouse_pos):
+    def click_test(self, mouse_pos):
         if mouse_pos[0] >= 0 and mouse_pos[1] >= 0:
-            clickedCell = self.mousePosToCell(mouse_pos)
+            clicked_cell = self.mouse_pos_to_cell_location(mouse_pos)
             try:
-                self.board.setCell(clickedCell, not self.board.isCellAlive(clickedCell))
+                self.board.set_cell(clicked_cell, not self.board.is_cell_alive(clicked_cell))
             except IndexError:
                 pass
 
-    def drawLiveCell(self, surface, position):
+    def _draw_live_cell(self, surface, position):
         (x, y) = position
-        (cellWidth, cellHeight) = self.cellSize
+        (cell_width, cell_height) = self.cell_size
 
-        x *= cellWidth
-        y *= cellHeight
+        x *= cell_width
+        y *= cell_height
 
-        mainColor = colors.cellLiveHoverColor if position == self.highlightCell else colors.cellMainColor
+        mainColor = colors.CELL_LIVE_HOVER_COLOR if position == self.highlight_cell else colors.CELL_MAIN_COLOR
 
-        draw.rect(surface, mainColor, ((x, y), self.cellSize))
-        draw.line(surface, colors.cellLightEdgeColor, (x,y), (x, y + cellHeight))
-        draw.line(surface, colors.cellLightEdgeColor, (x,y), (x + cellWidth, y))
-        draw.line(surface, colors.cellDarkEdgeColor, (x, y + cellHeight), (x + cellWidth, y + cellHeight))
-        draw.line(surface, colors.cellDarkEdgeColor, (x + cellWidth, y), (x + cellWidth, y + cellHeight))
+        draw.rect(surface, mainColor, ((x, y), self.cell_size))
+        draw.line(surface, colors.CELL_LIGHT_EDGE_COLOR, (x,y), (x, y + cell_height))
+        draw.line(surface, colors.CELL_LIGHT_EDGE_COLOR, (x,y), (x + cell_width, y))
+        draw.line(surface, colors.CELL_DARK_EDGE_COLOR, (x, y + cell_height), (x + cell_width, y + cell_height))
+        draw.line(surface, colors.CELL_DARK_EDGE_COLOR, (x + cell_width, y), (x + cell_width, y + cell_height))
 
-    def drawDeadCell(self, surface, position):
-        if position == self.highlightCell:
+    def _draw_dead_cell(self, surface, position):
+        if position == self.highlight_cell:
             (x, y) = position
             
-            (cellWidth, cellHeight) = self.cellSize
+            (cell_width, cell_height) = self.cell_size
 
-            x *= cellWidth
-            y *= cellHeight
+            x *= cell_width
+            y *= cell_height
 
-            draw.rect(surface, colors.cellDeadHoverColor, ((x, y), self.cellSize))
+            draw.rect(surface, colors.CELL_DEAD_HOVER_COLOR, ((x, y), self.cell_size))

@@ -1,8 +1,9 @@
-gameBackground = 0, 0, 0
-cellMainColor = 180, 180, 180
-cellDeadHoverColor = 65, 65, 65
-cellLiveHoverColor = 236, 236, 236
-cellLightEdgeColor = 220, 220, 220
-cellDarkEdgeColor = 120, 120, 120
+GAME_BACKGROUND = 0, 0, 0
 
-buttonAreaColor = 255, 255, 255
+CELL_MAIN_COLOR = 180, 180, 180
+CELL_DEAD_HOVER_COLOR = 65, 65, 65
+CELL_LIVE_HOVER_COLOR = 236, 236, 236
+CELL_LIGHT_EDGE_COLOR = 220, 220, 220
+CELL_DARK_EDGE_COLOR = 120, 120, 120
+
+BUTTON_AREA_COLOR = 255, 255, 255

@@ -8,51 +8,51 @@ import colors
 import pygame
 
 class Game:
-    def __init__(self, gridSize, display):
-        self.gridSize = gridSize
-        self.board = self.makeDefaultBoard()
-        self.buttonAreaHeight = 100
-        self.cellSize = 25,25
-        self.screenSize = width, height = self.gridSize[0] * self.cellSize[0], (self.gridSize[1] * self.cellSize[1]) + self.buttonAreaHeight
-        self.screen = display.set_mode(self.screenSize)
+    def __init__(self, grid_size, display):
+        self.grid_size = grid_size
+        self.board = self._make_default_board()
+        self.button_area_height = 100
+        self.cell_size = 25,25
+        self.screen_size = width, height = self.grid_size[0] * self.cell_size[0], (self.grid_size[1] * self.cell_size[1]) + self.button_area_height
+        self.screen = display.set_mode(self.screen_size)
         self.display = display
 
-        self.buttonBar = ButtonBar(self.screenSize, self.buttonAreaHeight, [GameButton(self.togglePause, "Pause"), GameButton(self.resetGame, "Reset"), GameButton(self.clearGame, "Clear")])
-        self.isPaused = False
+        self.button_bar = ButtonBar(self.screen_size, self.button_area_height, [GameButton(self._toggle_pause, "Pause"), GameButton(self._reset_game, "Reset"), GameButton(self._clear_game, "Clear")])
+        self.is_paused = False
 
 
-    def makeDefaultBoard(self):
-        board = GameBoard(self.gridSize)
+    def _make_default_board(self):
+        board = GameBoard(self.grid_size)
 
         # Glider at the top left
-        board.setCell(Point(1, 0), True)
-        board.setCell(Point(2, 1), True)
-        board.setCell(Point(0, 2), True)
-        board.setCell(Point(1, 2), True)
-        board.setCell(Point(2, 2), True)
+        board.set_cell(Point(1, 0), True)
+        board.set_cell(Point(2, 1), True)
+        board.set_cell(Point(0, 2), True)
+        board.set_cell(Point(1, 2), True)
+        board.set_cell(Point(2, 2), True)
 
         # Blinker at the top middle
-        board.setCell(Point(20, 2), True)
-        board.setCell(Point(20, 3), True)
-        board.setCell(Point(20, 4), True)        
+        board.set_cell(Point(20, 2), True)
+        board.set_cell(Point(20, 3), True)
+        board.set_cell(Point(20, 4), True)        
 
         return board
 
 
-    def togglePause(self):
-        self.isPaused = not self.isPaused
-        return self.isPaused
+    def _toggle_pause(self):
+        self.is_paused = not self.is_paused
+        return self.is_paused
 
 
-    def resetGame(self):
-        self.board = self.makeDefaultBoard()
+    def _reset_game(self):
+        self.board = self._make_default_board()
 
 
-    def clearGame(self):
-        self.board = GameBoard(self.gridSize)
+    def _clear_game(self):
+        self.board = GameBoard(self.grid_size)
 
 
-    def runGameLoop(self, getGameEvent, setEventTimer):
+    def run_game_loop(self, getGameEvent, setEventTimer):
         
         mouse_move_pos = (0, 0)
         
@@ -69,19 +69,19 @@ class Game:
                 if event.type == pygame.MOUSEMOTION:
                     mouse_move_pos = event.pos
                 if event.type == MOVE_TO_NEXT_GENERATION:
-                    if not self.isPaused:
-                        self.board = self.board.nextGeneration()
+                    if not self.is_paused:
+                        self.board = self.board.next_generation()
 
-            self.screen.fill(colors.gameBackground)
+            self.screen.fill(colors.GAME_BACKGROUND)
 
-            boardRender = BoardRender(self.screen, self.board, self.cellSize)
-            boardRender.mouseMoveTest(mouse_move_pos)
-            boardRender.clickTest(mouse_down_pos)
-            boardRender.draw()
+            board_render = BoardRender(self.screen, self.board, self.cell_size)
+            board_render.mouse_move_test(mouse_move_pos)
+            board_render.click_test(mouse_down_pos)
+            board_render.draw()
 
-            self.buttonBar.mouseMoveTest(mouse_move_pos)
-            self.buttonBar.clickTest(mouse_down_pos)
-            self.buttonBar.draw(self.screen)
+            self.button_bar.mouse_move_test(mouse_move_pos)
+            self.button_bar.click_test(mouse_down_pos)
+            self.button_bar.draw(self.screen)
             
             self.display.flip()
 
