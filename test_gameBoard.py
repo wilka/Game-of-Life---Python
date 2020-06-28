@@ -2,8 +2,6 @@ import unittest
 from gameBoard import GameBoard
 from point import Point
 
-# You can run this test file with `py -m unittest test_gameBoard.py`
-
 class TestGameBoard(unittest.TestCase):
     def test_blinker_oscillator(self):
         # https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Examples_of_patterns
@@ -50,3 +48,6 @@ class TestGameBoard(unittest.TestCase):
         self.assertFalse(board.is_cell_alive(Point(5, 2)))        
 
         
+
+if __name__ == '__main__':
+    unittest.main()
