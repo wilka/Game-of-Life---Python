@@ -27,16 +27,31 @@ class GameBoard:
 
     def _adjacent_cell_positions(self, position):
         (x, y) = position
-        yield Point(x-1, y-1)
-        yield Point(x, y-1)
-        yield Point(x+1, y-1)
 
-        yield Point(x-1, y)
-        yield Point(x+1, y)
+        def boundary_points():
+            yield Point(x-1, y-1)
+            yield Point(x, y-1)
+            yield Point(x+1, y-1)
 
-        yield Point(x-1, y+1)
-        yield Point(x, y+1)
-        yield Point(x+1, y+1)            
+            yield Point(x-1, y)
+            yield Point(x+1, y)
+
+            yield Point(x-1, y+1)
+            yield Point(x, y+1)
+            yield Point(x+1, y+1)            
+
+        for point in boundary_points():
+            if self._is_valid_cell_location(point):
+                yield point
+
+    def _is_valid_cell_location(self, position):
+        if position.x < 0 or position.y < 0:
+            return False
+
+        if position.x > self.grid_size[0] or position.y > self.grid_size[1]:
+            return False
+
+        return True
 
     def _adjacent_cells(self, position):
         for pos in self._adjacent_cell_positions(position):

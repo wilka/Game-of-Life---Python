@@ -6,6 +6,7 @@ from point import Point
 from time import sleep
 import colors
 import pygame
+import gameBoardReaderWriter
 
 class Game:
     def __init__(self, grid_size, display):
@@ -17,7 +18,14 @@ class Game:
         self.screen = display.set_mode(self.screen_size)
         self.display = display
 
-        self.button_bar = ButtonBar(self.screen_size, self.button_area_height, [GameButton(self._toggle_pause, "Pause"), GameButton(self._reset_game, "Reset"), GameButton(self._clear_game, "Clear")])
+        buttons = [GameButton(self._toggle_pause, "Pause"), 
+                    GameButton(self._reset_game, "Reset"), 
+                    GameButton(self._clear_game, "Clear"),
+                    GameButton(self._load_board, "Load"),
+                    GameButton(self._save_board, "Save"),
+                    ]
+
+        self.button_bar = ButtonBar(self.screen_size, self.button_area_height, buttons)
         self.is_paused = False
 
 
@@ -38,7 +46,14 @@ class Game:
 
         return board
 
+    def _load_board(self):
+        new_board = gameBoardReaderWriter.read_board()
+        if new_board:
+            self.board = new_board
 
+    def _save_board(self):
+        gameBoardReaderWriter.write_board(self.board)
+        
     def _toggle_pause(self):
         self.is_paused = not self.is_paused
         return self.is_paused
