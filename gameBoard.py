@@ -8,13 +8,7 @@ class Cell:
 class GameBoard:
     def __init__(self, grid_size):
         self.grid_size = grid_size
-        self.board = []
-        for x in range(grid_size[0]):
-            row = []
-            for y in range(grid_size[1]):
-                row.append(False)
-            
-            self.board.append(row)
+        self.board = [[False] * grid_size[1] for x in range(grid_size[0])]
 
     def set_cell(self, position, is_alive):
         self.board[position.x][position.y] = is_alive
